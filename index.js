@@ -8,25 +8,24 @@ const TOKEN_PATH = 'token.json';
 
 fs.readFile('credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
-  authorize(JSON.parse(content), listEvents, getAvailabilities);
+  authorize(JSON.parse(content), listEvents);
 });
 
-function authorize(credentials, callback, callback2) {
+function authorize(credentials, callback) {
   console.log("credentials", credentials.web)
   const {client_secret, client_id, redirect_uris} = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uris[0]);
 
   fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getAccessToken(oAuth2Client, callback, callback2);
+    if (err) return getAccessToken(oAuth2Client, callback);
     oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client, callback2);
+    callback(oAuth2Client);
   });
 }
 
-function getAccessToken(oAuth2Client, callback, callback2) {
+function getAccessToken(oAuth2Client, callback) {
   const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
     scope: SCOPES,
   });
   console.log('Authorize this app by visiting this url:', authUrl);
@@ -40,16 +39,17 @@ function getAccessToken(oAuth2Client, callback, callback2) {
       if (err) return console.error('Error retrieving access token', err);
       oAuth2Client.setCredentials(token);
       // Store the token to disk for later program executions
+      console.log("TOKEN!", token)
       fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
         if (err) return console.error(err);
         console.log('Token stored to', TOKEN_PATH);
       });
-      callback(oAuth2Client, callback2);
+      callback(oAuth2Client);
     });
   });
 }
 
-function listEvents(auth, callback) {
+function listEvents(auth) {
   const calendar = google.calendar({version: 'v3', auth});
   calendar.events.list({
     calendarId: 'primary',
@@ -71,30 +71,21 @@ function listEvents(auth, callback) {
     }
   });
 
-  callback(auth);
-}
 
-function getAvailabilities(auth) {
-  const calendar = google.calendar({version: 'v3', auth});
   const startDate = new Date(Date.now());
-  const numDays = 1
-  const endDate = new Date(Date.now() + 1000 * 60 * 60);
-  // endDate.setDate(startDate.getDate() + numDays)
-
+  const endDate = new Date(Date.now() + 1000 * 60 * 60*5);
   console.log("start: ", startDate, "end: ", endDate)
   calendar.freebusy.query({
-    auth: auth,
-    headers:  { "content-type" : "application/json" },
     resource: {
-      items: [{id: 'aqureshi@sps-program.com'}, {id: "sps-program.com_psfs6lrh06kqk2hqub5hu6dj8s@group.calendar.google.com"}],
+      items: [{id: 'primary'}, {id: "sps-program.com_psfs6lrh06kqk2hqub5hu6dj8s@group.calendar.google.com"}],
       timeMin: startDate.toISOString(),
-      timeMax: endDate.toISOString()
+      timeMax: endDate.toISOString(),
+      timeZone: 'America/Toronto'
     },
   }, (err, res) => {
     if (err) return console.log("The API returned an error: " + err);
-    console.log("response: ", res.data);
     Object.keys(res.data.calendars).forEach( cal => {
-      console.log(res.data.calendars[cal])
+      console.log(cal, res.data.calendars[cal])
     })
   });
 }
