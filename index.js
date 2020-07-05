@@ -1,36 +1,30 @@
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
+const { start } = require('repl');
 
-// If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'];
-// The file token.json stores the user's access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
 const TOKEN_PATH = 'token.json';
 
-// Load client secrets from a local file.
 fs.readFile('credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
-  // Authorize a client with credentials, then call the Google Calendar API.
-  authorize(JSON.parse(content), listEvents);
+  authorize(JSON.parse(content), listEvents, getAvailabilities);
 });
 
-function authorize(credentials, callback) {
+function authorize(credentials, callback, callback2) {
   console.log("credentials", credentials.web)
   const {client_secret, client_id, redirect_uris} = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uris[0]);
 
-  // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getAccessToken(oAuth2Client, callback);
+    if (err) return getAccessToken(oAuth2Client, callback, callback2);
     oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client);
+    callback(oAuth2Client, callback2);
   });
 }
 
-function getAccessToken(oAuth2Client, callback) {
+function getAccessToken(oAuth2Client, callback, callback2) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES,
@@ -50,16 +44,12 @@ function getAccessToken(oAuth2Client, callback) {
         if (err) return console.error(err);
         console.log('Token stored to', TOKEN_PATH);
       });
-      callback(oAuth2Client);
+      callback(oAuth2Client, callback2);
     });
   });
 }
 
-/**
- * Lists the next 10 events on the user's primary calendar.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-function listEvents(auth) {
+function listEvents(auth, callback) {
   const calendar = google.calendar({version: 'v3', auth});
   calendar.events.list({
     calendarId: 'primary',
@@ -79,5 +69,32 @@ function listEvents(auth) {
     } else {
       console.log('No upcoming events found.');
     }
+  });
+
+  callback(auth);
+}
+
+function getAvailabilities(auth) {
+  const calendar = google.calendar({version: 'v3', auth});
+  const startDate = new Date(Date.now());
+  const numDays = 1
+  const endDate = new Date(Date.now() + 1000 * 60 * 60);
+  // endDate.setDate(startDate.getDate() + numDays)
+
+  console.log("start: ", startDate, "end: ", endDate)
+  calendar.freebusy.query({
+    auth: auth,
+    headers:  { "content-type" : "application/json" },
+    resource: {
+      items: [{id: 'aqureshi@sps-program.com'}, {id: "sps-program.com_psfs6lrh06kqk2hqub5hu6dj8s@group.calendar.google.com"}],
+      timeMin: startDate.toISOString(),
+      timeMax: endDate.toISOString()
+    },
+  }, (err, res) => {
+    if (err) return console.log("The API returned an error: " + err);
+    console.log("response: ", res.data);
+    Object.keys(res.data.calendars).forEach( cal => {
+      console.log(res.data.calendars[cal])
+    })
   });
 }
