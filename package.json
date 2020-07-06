@@ -1,0 +1,25 @@
+{
+  "name": "smart-todo",
+  "version": "1.0.0",
+  "description": "sample project which gets gCal availabilities",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cookiemonsterleni/smart-todo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cookiemonsterleni/smart-todo/issues"
+  },
+  "homepage": "https://github.com/cookiemonsterleni/smart-todo#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "fs": "0.0.1-security",
+    "googleapis": "^52.1.0",
+    "readline": "^1.3.0"
+  }
+}
