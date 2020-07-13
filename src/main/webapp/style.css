@@ -303,12 +303,12 @@
 
 .text {
 	color: #ffffff;
-	font-size: 18px;
+	font-size: 1.5vw;
 	padding: 8px 12px;
 	position: relative;
 	bottom: 1px;
 	width: 90%;
-	margin-left: 5vw;
+	margin-left: 3vw;
 	text-align: center;
 	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }

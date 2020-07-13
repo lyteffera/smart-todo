@@ -144,7 +144,7 @@ async function updateDataInclude(){
 function updateRecordStatus(entity){
     let data = {id: entity.name};
 
-    fetch("/todo-updates", {
+    fetch("/todo_updates", {
         method: "POST", 
         body: JSON.stringify(data)
     });

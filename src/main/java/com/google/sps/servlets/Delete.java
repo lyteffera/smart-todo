@@ -71,19 +71,25 @@ public class Delete extends HttpServlet {
           body.append(currentLine);
       }
       JsonObject parsedBodyData = JsonObjectification.objectify(body.toString());
-      String id = null;
-      
+      Key[] keys = new Key[parsedBodyData.getChildren().size()];
+      int i = 0;
       for(JsonObject object:parsedBodyData.getChildren())
       {
         try{
-          Key key = KeyFactory.stringToKey(object.getChild("id").getData());
-          datastore.delete(key);
+          keys[i] = KeyFactory.stringToKey(object.getChild("id").getData());
         }catch(Exception e)
         {
           e.printStackTrace();
         }
+        i++;
       }
-    
+      try{
+          datastore.delete(keys);
+        }catch(Exception e)
+        {
+          e.printStackTrace();
+        }
+
     response.sendRedirect("/index.html");
   }
 
