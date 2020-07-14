@@ -11,6 +11,10 @@ import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.FreeBusyRequest;
+import com.google.api.services.calendar.model.FreeBusyRequestItem;
+import com.google.api.services.calendar.model.FreeBusyResponse;
+import com.google.api.services.calendar.model.FreeBusyCalendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
@@ -26,7 +30,7 @@ public class CalendarQuickstart {
     private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
-
+    private static final int NUM_MILLISECOND_IN_DAY = 1000 * 60 * 60;
     /**
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved tokens/ folder.
@@ -65,9 +69,15 @@ public class CalendarQuickstart {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
+                DateTime now = new DateTime(System.currentTimeMillis());
+                DateTime end = new DateTime(System.currentTimeMillis() + NUM_MILLISECOND_IN_DAY*60);
+                printUpcomingEvents(service, now);
+                getFreeBusy(service, now, end);
+    }
+
+    private static void printUpcomingEvents(Calendar cal, DateTime now) throws IOException, GeneralSecurityException {
         // List the next 10 events from the primary calendar.
-        DateTime now = new DateTime(System.currentTimeMillis());
-        Events events = service.events().list("primary")
+        Events events = cal.events().list("primary")
                 .setMaxResults(10)
                 .setTimeMin(now)
                 .setOrderBy("startTime")
@@ -77,7 +87,7 @@ public class CalendarQuickstart {
         if (items.isEmpty()) {
             System.out.println("No upcoming events found.");
         } else {
-            System.out.println("Upcoming events");
+            System.out.println("*************Upcoming events*************");
             for (Event event : items) {
                 DateTime start = event.getStart().getDateTime();
                 if (start == null) {
@@ -86,5 +96,18 @@ public class CalendarQuickstart {
                 System.out.printf("%s (%s)\n", event.getSummary(), start);
             }
         }
+    }
+
+    private static void getFreeBusy(Calendar cal, DateTime startTime, DateTime endTime) throws IOException, GeneralSecurityException {
+      FreeBusyRequest req = new FreeBusyRequest();
+      FreeBusyRequestItem item = new FreeBusyRequestItem();
+      item.setId("primary");
+      List<FreeBusyRequestItem> items = Collections.singletonList(item);
+      req.setTimeMin(startTime);
+      req.setTimeMax(endTime);
+      req.setItems(items);
+      Calendar.Freebusy.Query fbq = cal.freebusy().query(req);
+      FreeBusyResponse fbresponse = fbq.execute();
+      System.out.println("***********free busy:************ \n" + fbresponse.toPrettyString());
     }
 }

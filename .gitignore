@@ -1,1 +1,5 @@
 src/main/resources/*
+.gradle/*
+bin/*
+build/*
+tokens/StoredCredential
