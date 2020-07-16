@@ -67,9 +67,17 @@ public class CalendarQuickstart {
     public static Calendar getCalendarService(){
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+        Calendar service = null;
+        try{
+            service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        return service;
     }
 
     private static void printUpcomingEvents(Calendar cal, DateTime now) throws IOException, GeneralSecurityException {
