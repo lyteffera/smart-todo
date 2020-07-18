@@ -44,7 +44,7 @@ public class TaskProcessor {
     private ArrayList<Event> eventList; 
 
     public TaskProcessor(){
-        datastore = DataStoreServiceFactory.getDataStoreService(); 
+        //datastore = DataStoreServiceFactory.getDataStoreService(); 
         gson = new Gson(); 
     }
     /*public static Entity getTasksFromDatastore(){
@@ -56,7 +56,7 @@ public class TaskProcessor {
         return list; 
     }
     */
-    public static void addEventToCalendar(Entity task){
+    /*public static void addEventToCalendar(Entity task){
         Calendar service = CalendarQuickstart.getCalendarService(); 
         Event event = new Event()
             .setSummary("Google I/O 2015")
@@ -101,5 +101,5 @@ public class TaskProcessor {
     //public static void addEventsToCalendar(ArrayList<Entity>){
         
     //}
-
+*/
 }

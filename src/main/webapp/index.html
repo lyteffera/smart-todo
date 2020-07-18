@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body id="body" onload="includeDynamicHTML('image_handler')">
+  <body id="body" onload="includeDynamicHTML('image_handler'); addItemsToDropDown('dependency_drop_down');">
     <div id="content" class="skyline-backdrop">
     <br><br>
     
@@ -17,8 +17,10 @@
         <form action="data" method="POST">
             <div class="text">
                 Your Submission:<br> <textarea name="message" required=true></textarea><br>
-                Estimated Time To Complete:<br> <input type="text" name="est_time" maxlength="80" required=true><br>
+                Estimated Time To Complete:<br> <input type="text" name="est_time" maxlength="5" required=true><br>
                 Due Date:<br> <input type="date" id="due_date" name="due_date"  required=true>
+                <select id="dependency_drop_down" name="dependency">
+                </select>
                 <input type="submit">
             </div>
         </form>

@@ -112,7 +112,9 @@ public class DataServlet extends HttpServlet {
     String due_date = getParameter(request, "due_date", "");
     String completion_date = getParameter(request, "completion_date", "");
     String user_id = getParameter(request, "user_id", "");
+    String dependency = getParameter(request, "dependency", "");
     String status = "open";
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
  
       Entity entity = new Entity("message_log");
@@ -122,6 +124,7 @@ public class DataServlet extends HttpServlet {
       entity.setProperty("est_time", StringUtil.escapeQuotesInParameter(est_time));
       entity.setProperty("due_date", StringUtil.escapeQuotesInParameter(due_date));
       entity.setProperty("completion_date", StringUtil.escapeQuotesInParameter(completion_date));
+      entity.setProperty("dependency", StringUtil.escapeQuotesInParameter(dependency));
       entity.setProperty("status", status);
       datastore.put(entity);
     

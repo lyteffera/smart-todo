@@ -123,30 +123,40 @@ function jsListToHtml(list){
 
     for(element of list)
     {
-      const checked = element.status=="closed"?'checked':"";
+      const checked = element.status==="closed"?'checked':"";
       html += `<input type="checkbox" name="${element.id}" value="${element.message}" ${checked} 
                 onclick="updateRecordStatus(event.target)"/>
-      <label for="${element.id}">${element.message}</label><br><br>`;
+      <label for="${element.id}">${element.message}</label>
+      <input type="submit" value="Delete" name="id" onclick = "deleteObject('${element.id}')"/><br><br>`;
 
     }
     html += '</ul>';
     return html
 }
 async function updateDataInclude(){
-    const path = 'data';
-    const element = document.getElementById(`include-${path}`);
+    const element = document.getElementById(`include-data`);
     if(element)
     {
-        const data = await getDataJson(`/${path}`);
+        const data = await getDataJson(`/data`);
         element.innerHTML = jsListToHtml(data)+'\n'+element.innerHTML;
     }
 }
+
 function updateRecordStatus(entity){
     let data = {id: entity.name};
 
     fetch("/todo_updates", {
         method: "POST", 
         body: JSON.stringify(data)
+    });
+}
+function deleteObject(id){
+    let data = [{id:id}];
+    fetch("/delete", {
+        method: "POST", 
+        body: JSON.stringify(data)
+    }).then(result => {
+        location.href = "index.html";
     });
 }
 function deleteCompleted(){
@@ -162,6 +172,18 @@ function deleteCompleted(){
     }).then(result => {
         location.href = "index.html";
     });
+}
+async function addItemsToDropDown(dropDownId)
+{
+    const dropDown = document.getElementById(dropDownId);
+    const data = await getDataJson('/data');
+    for(x of data)
+    {
+        const newElement = document.createElement("OPTION");
+        newElement.innerText = x.message;
+        newElement.value = x.id;
+        dropDown.appendChild(newElement);
+    }
 }
 document.addEventListener('DOMContentLoaded',() => {
 })
