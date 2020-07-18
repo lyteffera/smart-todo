@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 
 public class ListRecord {
     private long timeStamp; 
-    private int est_time;
-    private String id,userId,message,due_date,completion_date,status;
-    public ListRecord(String id, long timeStamp, String userId, String message, int est_time, 
+    private double est_time;
+    private String id,dependency,userId,message,due_date,completion_date,status;
+    public ListRecord(String id, String dependency, long timeStamp, String userId, String message, double est_time, 
                             String due_date, String completion_date, String status)
     {
       this.id = id;
@@ -16,6 +16,7 @@ public class ListRecord {
       this.est_time = est_time;
       this.due_date = due_date;
       this.completion_date = completion_date;
+      this.dependency = dependency;
       this.status = status;
     }
 }

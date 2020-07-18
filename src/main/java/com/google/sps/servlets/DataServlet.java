@@ -44,8 +44,8 @@ public class DataServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) 
     {
         long time = -1;
-        int est_time = -1;
-        String user_id = "", message = "", due_date = "", completion_date = "", status = "invalid";
+        double est_time = -1;
+        String user_id = "", message = "", due_date = "", completion_date = "", status = "invalid",dependency="";
         String id = "";
 
         
@@ -62,10 +62,16 @@ public class DataServlet extends HttpServlet {
           System.out.print("time, ");
         }
         try{
-            est_time = Integer.parseInt((String)entity.getProperty("est_time"));
+            est_time = Double.parseDouble((String)entity.getProperty("est_time"));
         }catch(Exception e)
         {
           System.out.print("est_time, ");
+        }
+        try{
+            dependency = (String)entity.getProperty("dependency");
+        }catch(Exception e)
+        {
+          System.out.print("dependency, ");
         }
         try{
             message = (String)entity.getProperty("message");
@@ -94,9 +100,9 @@ public class DataServlet extends HttpServlet {
         }
         System.out.println();
         if(!"closed".equals(status))
-          records.add(new ListRecord(id, time, user_id, message, est_time, due_date, completion_date, status));
+          records.add(new ListRecord(id, dependency, time, user_id, message, est_time, due_date, completion_date, status));
         else
-          closedRecords.add(new ListRecord(id, time, user_id, message, est_time, due_date, completion_date, status));
+          closedRecords.add(new ListRecord(id, dependency, time, user_id, message, est_time, due_date, completion_date, status));
     }
     for(ListRecord record:closedRecords)
     {
