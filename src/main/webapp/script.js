@@ -165,3 +165,22 @@ function deleteCompleted(){
 }
 document.addEventListener('DOMContentLoaded',() => {
 })
+
+
+/**
+ * Fetches the JSON string of comments from the server and adds it to the DOM. 
+ */
+ function getCalendarData() {
+  const commentPromise = fetch('/calendar_stuff');
+  commentPromise.then(handleCalendarData);
+}
+/**
+ * Converts the comment in getCommentMessage() to text, which is handled
+ * by addCommentToDOM(). 
+ */
+function handleCalendarData(promise) {
+  const textPromise = promise.text();
+  const calendarData = document.createTextNode(textPromise);
+  document.getElementById('calendar-stuff').appendChild(calendarData);
+}
+getCalendarData(); 
