@@ -18,4 +18,24 @@ public class ListRecord {
       this.completion_date = completion_date;
       this.status = status;
     }
+        //the following functions are getter methods for properties of a ListRecord. Will 
+    //add Javadoc documentation later. 
+    public String getId(){
+      return id; 
+    }
+    public long getTimeStamp(){
+      return timeStamp; 
+    }
+    public String getMessage(){
+      return message; 
+    }
+    public String getDueDate(){
+      return due_date; 
+    }
+    public String getCompletionDate(){
+      return completion_date; 
+    }
+    public String getStatus(){
+      return status; 
+    }
 }

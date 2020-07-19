@@ -4,6 +4,7 @@ com/google/sps/servlets/ToDo.class
 com/google/sps/servlets/Delete.class
 com/calendarfiles/CalendarQuickstart.class
 com/andrewrs/sps/data/ListRecord.class
+com/calendarfiles/TaskProcessor.class
 com/google/sps/servlets/CalendarCheckFunctionality.class
 com/andrewrs/sps/data/BlobKeyValuePair.class
 com/andrewrs/sps/utils/VisionApiUtils.class
