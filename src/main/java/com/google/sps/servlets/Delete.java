@@ -89,7 +89,8 @@ public class Delete extends HttpServlet {
       {
         try
         {
-          if(eventsToDelete[i].deleteCalendarEvent()) datastore.delete(keys[i]);
+          //if(eventsToDelete[i].deleteCalendarEvent()) 
+            datastore.delete(keys[i]);
         }catch(Exception e)
         {
           e.printStackTrace();

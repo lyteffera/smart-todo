@@ -66,8 +66,6 @@ public class DataServlet extends HttpServlet {
     String dependency = getParameter(request, "dependency", "");
     String status = "open";
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
       Entity entity = new Entity("message_log");
       entity.setProperty("timeStamp", System.currentTimeMillis());
       entity.setProperty("message", StringUtil.escapeQuotesInParameter(message));

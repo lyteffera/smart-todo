@@ -7,25 +7,7 @@ public class JsonObjectification
 	public JsonObjectification() {}
 	public JsonObjectification(String json)
 	{
-		String baseStartTag,baseEndTag;
-		if(json.charAt(0)=='[')
-		{
-			baseStartTag="";
-			baseEndTag="";
-			jsonObject=new JsonObject(JsonObject.ARRAY, 
-					new JsonObject(""),
-					"base",
-					"\"base\":"+baseStartTag+json+baseEndTag);
-		}
-		else
-		{
-			baseStartTag= "{";
-			baseEndTag= "}";
-			jsonObject=new JsonObject(JsonObject.OBJECT, 
-					null,
-					"base",
-					"\"base\":"+baseStartTag+json+baseEndTag);
-		}
+		objectify(json);
 	}
 	public static JsonObject objectify(String json)
 	{

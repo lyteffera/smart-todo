@@ -122,7 +122,7 @@ public class Gcal {
         Calendar.Freebusy.Query fbq = cal.freebusy().query(req);
         FreeBusyResponse fbresponse = fbq.execute();
         System.out.println("***********free busy:************ \n" + fbresponse.toPrettyString());
-        return fbresponse.toPrettyString();
+        return fbresponse.toString();
       } catch(Exception e) {
           e.printStackTrace();
           return null;
