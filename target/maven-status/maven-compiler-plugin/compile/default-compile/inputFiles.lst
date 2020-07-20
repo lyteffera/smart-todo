@@ -1,0 +1,14 @@
+/home/lteffera/smart-todo/src/main/java/com/google/sps/servlets/ToDo.java
+/home/lteffera/smart-todo/src/main/java/com/calendarfiles/TaskProcessor.java
+/home/lteffera/smart-todo/src/main/java/com/andrewrs/sps/utils/StringUtil.java
+/home/lteffera/smart-todo/src/main/java/com/google/sps/servlets/ImageDataServlet.java
+/home/lteffera/smart-todo/src/main/java/com/calendarfiles/CalendarQuickstart.java
+/home/lteffera/smart-todo/src/main/java/com/andrewrs/sps/utils/VisionApiUtils.java
+/home/lteffera/smart-todo/src/main/java/com/google/sps/servlets/Delete.java
+/home/lteffera/smart-todo/src/main/java/com/google/sps/servlets/DataServlet.java
+/home/lteffera/smart-todo/src/main/java/com/andrewrs/sps/data/ListRecord.java
+/home/lteffera/smart-todo/src/main/java/com/andrewrs/sps/utils/JsonObjectification.java
+/home/lteffera/smart-todo/src/main/java/com/andrewrs/sps/data/BlobKeyValuePair.java
+/home/lteffera/smart-todo/src/main/java/com/andrewrs/sps/utils/BlobStoreUtils.java
+/home/lteffera/smart-todo/src/main/java/com/andrewrs/sps/utils/JsonObject.java
+/home/lteffera/smart-todo/src/main/java/com/andrewrs/sps/utils/HTTPHandler.java

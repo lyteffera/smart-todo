@@ -1,0 +1,14 @@
+com/andrewrs/sps/utils/JsonObjectification.class
+com/andrewrs/sps/utils/JsonObject.class
+com/google/sps/servlets/ToDo.class
+com/google/sps/servlets/Delete.class
+com/calendarfiles/CalendarQuickstart.class
+com/andrewrs/sps/data/ListRecord.class
+com/calendarfiles/TaskProcessor.class
+com/andrewrs/sps/data/BlobKeyValuePair.class
+com/andrewrs/sps/utils/VisionApiUtils.class
+com/andrewrs/sps/utils/HTTPHandler.class
+com/andrewrs/sps/utils/StringUtil.class
+com/google/sps/servlets/ImageDataServlet.class
+com/google/sps/servlets/DataServlet.class
+com/andrewrs/sps/utils/BlobStoreUtils.class

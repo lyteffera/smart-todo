@@ -1,7 +1,7 @@
 package com.calendarfiles;
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -26,27 +26,28 @@ import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList; 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
 
 public class CalendarQuickstart {
-    private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
-    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
-    private static final int NUM_MILLISECOND_IN_DAY = 1000 * 60 * 60;
+    private final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
+    private final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    private final String TOKENS_DIRECTORY_PATH = "tokens";
+    private final int NUM_MILLISECOND_IN_DAY = 1000 * 60 * 60;
     /**
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved tokens/ folder.
      */
-    private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-
+    private final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
+    private final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    
     /**
      * Creates an authorized Credential object.
      * @param HTTP_TRANSPORT The network HTTP Transport.
      * @return An authorized Credential object.
      * @throws IOException If the credentials.json file cannot be found.
      */
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
         InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
@@ -58,29 +59,32 @@ public class CalendarQuickstart {
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-                .setAccessType("offline")
+                .setAccessType("offline")//not offline
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public static Calendar getCalendarService(){
+    public Calendar getCalendarService(){
         // Build a new authorized API client service.
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Calendar service = null;
-        try{
+        try {
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
-        }catch(Exception e)
+        }
+        catch(Exception e)
         {
             e.printStackTrace();
         }
-        
+         
         return service;
     }
 
-    private static void printUpcomingEvents(Calendar cal, DateTime now) throws IOException, GeneralSecurityException {
+    
+
+    public void printUpcomingEvents(Calendar cal, DateTime now) throws IOException, GeneralSecurityException {
         // List the next 10 events from the primary calendar.
         Events events = cal.events().list("primary")
                 .setMaxResults(10)
@@ -103,7 +107,7 @@ public class CalendarQuickstart {
         }
     }
 
-    private static void getFreeBusy(Calendar cal, DateTime startTime, DateTime endTime) throws IOException, GeneralSecurityException {
+    private void getFreeBusy(Calendar cal, DateTime startTime, DateTime endTime) throws IOException, GeneralSecurityException {
       FreeBusyRequest req = new FreeBusyRequest();
       FreeBusyRequestItem item = new FreeBusyRequestItem();
       item.setId("primary");
