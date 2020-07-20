@@ -49,19 +49,19 @@ import com.andrewrs.sps.utils.HTTPHandler;
 public class Delete extends HttpServlet {
   private DatastoreService datastore;
   private Gson gson;
-  
+
   public void init()
   {
     datastore = DatastoreServiceFactory.getDatastoreService();
     gson = new Gson();
   }
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException 
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
   {
     response.sendRedirect("/index.html");
   }
     @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException 
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
   {
       BufferedReader reader = request.getReader();
       StringBuilder body = new StringBuilder();
@@ -73,27 +73,34 @@ public class Delete extends HttpServlet {
       JsonObject parsedBodyData = JsonObjectification.objectify(body.toString());
       Key[] keys = new Key[parsedBodyData.getChildren().size()];
       int i = 0;
+      ListRecord[] eventsToDelete = new ListRecord[parsedBodyData.getChildren().size()];
       for(JsonObject object:parsedBodyData.getChildren())
       {
         try{
           keys[i] = KeyFactory.stringToKey(object.getChild("id").getData());
+          eventsToDelete[i] = new ListRecord(object.getChild("id").getData());
         }catch(Exception e)
         {
           e.printStackTrace();
         }
         i++;
       }
-      try{
-          datastore.delete(keys);
+      for(i = 0; i < keys.length; ++i)
+      {
+        try
+        {
+          if(eventsToDelete[i].deleteCalendarEvent()) datastore.delete(keys[i]);
         }catch(Exception e)
         {
           e.printStackTrace();
         }
+      }
+
 
     response.sendRedirect("/index.html");
   }
 
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) 
+  private String getParameter(HttpServletRequest request, String name, String defaultValue)
   {
     String value = request.getParameter(name);
     if (value == null) {
