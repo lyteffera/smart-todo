@@ -44,8 +44,10 @@ public class DataServlet extends HttpServlet {
     for (Entity entity : results.asIterable())
     {
       ListRecord temp = entityToLR(entity);
-      if (temp.getStatus().equals("closed")) closedRecords.add(temp);
-      else records.add(temp);
+      if (temp.getStatus().equals("closed")) 
+        closedRecords.add(temp);
+      else 
+        records.add(temp);
     }
     for(ListRecord record:closedRecords)
     {

@@ -59,7 +59,7 @@ public class ListRecord {
         event.setStart(start);
 
         // event end time will be determined by scheduling software
-        DateTime endDateTime = new DateTime(this.scheduled_date + (this.est_time * 3600 * 1000));
+        DateTime endDateTime = new DateTime((long)(1595289600L+ this.scheduled_date + (this.est_time * 3600 * 1000)));
         EventDateTime end = new EventDateTime()
             .setDateTime(endDateTime)
             .setTimeZone("America/Los_Angeles");
