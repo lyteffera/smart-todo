@@ -110,7 +110,7 @@ public class Gcal {
         }
     }
 
-    public static void getFreeBusy(Calendar cal, DateTime startTime, DateTime endTime) throws IOException, GeneralSecurityException {
+    public static String getFreeBusy(Calendar cal, DateTime startTime, DateTime endTime) {
       FreeBusyRequest req = new FreeBusyRequest();
       FreeBusyRequestItem item = new FreeBusyRequestItem();
       item.setId("primary");
@@ -118,8 +118,14 @@ public class Gcal {
       req.setTimeMin(startTime);
       req.setTimeMax(endTime);
       req.setItems(items);
-      Calendar.Freebusy.Query fbq = cal.freebusy().query(req);
-      FreeBusyResponse fbresponse = fbq.execute();
-      System.out.println("***********free busy:************ \n" + fbresponse.toPrettyString());
+      try {
+        Calendar.Freebusy.Query fbq = cal.freebusy().query(req);
+        FreeBusyResponse fbresponse = fbq.execute();
+        System.out.println("***********free busy:************ \n" + fbresponse.toPrettyString());
+        return fbresponse.toPrettyString();
+      } catch(Exception e) {
+          e.printStackTrace();
+          return null;
+      }
     }
 }
