@@ -165,3 +165,16 @@ function deleteCompleted(){
 }
 document.addEventListener('DOMContentLoaded',() => {
 })
+function getCalendarData() {
+  const commentPromise = fetch('/calendar_stuff');
+  commentPromise.then(handleCalendarData);
+}
+/**
+ * Converts the calendar json data in getCommentMessage() to text and adds it to the webpage. 
+ */
+function handleCalendarData(promise) {
+  const textPromise = promise.text();
+  const calendarData = document.createTextNode(textPromise);
+  document.getElementById('calendar-stuff').appendChild(calendarData);
+}
+getCalendarData(); 
