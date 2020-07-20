@@ -12,6 +12,12 @@ const greeting =
     prevQuoteNum = newGreetingNum;
     alert(greeting[newGreetingNum]);
 }
+
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+
+
 async function getDataText(path) {
   // The fetch() function returns response object, and is asynchronous.
   const response = await fetch(path);
