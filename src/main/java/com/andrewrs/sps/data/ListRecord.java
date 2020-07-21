@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 public class ListRecord {
     private long timeStamp, scheduled_date;
+    private static int offset = 0;
     private double est_time;
     private String id,dependency,userId,message,due_date,completion_date,status;
     public ListRecord(String id) {this.id = id; scheduled_date = 0;}
@@ -52,14 +53,14 @@ public class ListRecord {
             .setDescription("Automatically made by smart-todo.com " + this.message);
 
         // get value from scheduled_date
-        DateTime startDateTime = new DateTime(this.scheduled_date);
+        DateTime startDateTime = new DateTime(this.scheduled_date+offset);
         EventDateTime start = new EventDateTime()
             .setDateTime(startDateTime)
             .setTimeZone("America/Los_Angeles");
         event.setStart(start);
 
         // event end time will be determined by scheduling software
-        DateTime endDateTime = new DateTime((long)(this.scheduled_date + (this.est_time * 3600 * 1000)));
+        DateTime endDateTime = new DateTime((long)(this.scheduled_date+offset+ (this.est_time * 3600 * 1000)));
         EventDateTime end = new EventDateTime()
             .setDateTime(endDateTime)
             .setTimeZone("America/Los_Angeles");
@@ -78,6 +79,7 @@ public class ListRecord {
         String calendarId = "primary";
         event = service.events().insert(calendarId, event).execute();
         System.out.printf("Event created: %s\n", event.getHtmlLink());
+        offset += 2*3600000;
       } catch(Exception e) {
         e.printStackTrace();
         return false;

@@ -18,10 +18,15 @@ import com.google.appengine.api.datastore.Entity;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.andrewrs.sps.utils.DataServiceInterface;
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.TimeZone;
+import java.time.ZoneId;
 
 public class Schedule {
 
@@ -60,12 +65,12 @@ public class Schedule {
                 JsonObject busy = freeBusy.getChild("calendars.primary.busy");
                 // if(busy.getChildren().size() == 0)
                 // {
-                //     current.setScheduledDate(current.getStart() - (current.getStart()%360000*24) + 360000*9);
+                //     current.setScheduledDate(current.getStart() - (current.getStart()%3600000*24) + 3600000*9);
                 //     current.save();
                 //     continue;
                 // }
                 int checkedDays = 0;
-                while(current.getScheduledDate() <= 0 && checkedDays*360000*24 < (current.getEnd()-current.getStart()))
+                while(current.getScheduledDate() <= 0 && checkedDays*3600000*24 < (current.getEnd()-current.getStart()))
                 {
                     ArrayList<TimeRange> timesInDay = new ArrayList<TimeRange>();
                     for(JsonObject busyTime:busy.getChildren())
@@ -74,27 +79,34 @@ public class Schedule {
                         String endString = busyTime.getChild("end").getData();
                         long start = parseTime(startString);
                         long end = parseTime(endString);
-                        if(timesInDay.size() == 0 || timesInDay.get(timesInDay.size()-1).getDay() == start/(360000*24) &&
-                        timesInDay.get(timesInDay.size()-1).getDay() > start/(360000*24) + checkedDays)
+                        if(timesInDay.size() == 0 || timesInDay.get(timesInDay.size()-1).getDay() == start/(3600000*24) &&
+                        timesInDay.get(timesInDay.size()-1).getDay() > start/(3600000*24) + checkedDays)
                         {
-                            TimeRange range = TimeRange.fromStartDuration((int)start%(360000*24),(int)end%(360000*24));
-                            range.setDay((int)(start/(360000*24)));
+                            System.out.println("start: " + start + " end: " + end);
+                            System.out.println("Start Since Midnight Calc: "+start%(3600000*24));
+                            LocalDateTime startDate =
+                            LocalDateTime.ofInstant(Instant.ofEpochMilli(start), ZoneId.systemDefault());
+                            LocalDateTime endDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(end), ZoneId.systemDefault());
+                            TimeRange range = TimeRange.fromStartEnd(startDate.getHour()*60+startDate.getMinute(),
+                                endDate.getHour()*60+endDate.getMinute(), false);
+                            range.setDay((int)(start/(3600000*24)));
                             timesInDay.add(range);
+                            System.out.println("Time Range Added to booked times: "+range);
                         }
                     }
 
                     Day today = new Day();
                     today.blockOutEventTimes(timesInDay);
                     ArrayList<TimeRange> todaysAvailabilities = today.buildAvailabilities((int)current.getEstTime());
+                    System.out.println("todaysAvailabilities: " + Arrays.toString(todaysAvailabilities.toArray()));
                     if(todaysAvailabilities.size() > 0)
                     {
                         current.setScheduledDate(
-                            (long)(todaysAvailabilities.get(0).start()+(360000*24*checkedDays)+current.getStart()%(360000*24)));
+                            (long)(todaysAvailabilities.get(0).start()*60000+(3600000*24*checkedDays)+current.getStart()));
                     }
                     checkedDays++;
+                    System.out.println("current.getScheduledDate(): " + current.getScheduledDate());
 
-                    if(current.getScheduledDate() > 0) current.save();
-                    else System.out.println("NOT SAVING: " + current.getPrimary().getMessage() + " "+ current.getPrimary().hashID() + " date: " + current.getScheduledDate());
 
                     Entity entity = DataServiceInterface.get(KeyFactory.stringToKey(current.getPrimary().getId()));
                     if(entity != null)
@@ -102,6 +114,8 @@ public class Schedule {
                         entity.setProperty("scheduled_date", current.getPrimary().getScheduledTime());
                         DataServiceInterface.put(entity);
                     }
+                    if(current.getScheduledDate() > 0) {current.save();break;}
+                    else System.out.println("NOT SAVING: " + current.getPrimary().getMessage() + " "+ current.getPrimary().hashID() + " date: " + current.getScheduledDate());
                 }
 
             }
@@ -115,6 +129,7 @@ public class Schedule {
     {
       long rtnData = -1;
       SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
+      f.setTimeZone(TimeZone.getTimeZone("EST"));
       try {
             Date d = f.parse(s);
             rtnData = d.getTime();

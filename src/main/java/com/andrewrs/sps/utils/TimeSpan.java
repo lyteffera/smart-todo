@@ -85,7 +85,7 @@ public TimeSpan(){}
   }
   public long getEstTime()
   {
-      return (long)(primary.getEstTime()*360000);
+      return (long)(primary.getEstTime()*60);
   }
   public long getScheduledDate()
   {
