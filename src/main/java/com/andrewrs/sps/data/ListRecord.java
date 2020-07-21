@@ -15,7 +15,7 @@ public class ListRecord {
     private long timeStamp, scheduled_date;
     private double est_time;
     private String id,dependency,userId,message,due_date,completion_date,status;
-    public ListRecord(String id) {this.id = id;}
+    public ListRecord(String id) {this.id = id; scheduled_date = 0;}
     public ListRecord(String id, String dependency, long timeStamp, String userId, String message, double est_time,
                             String due_date, String completion_date, String status, long scheduled_date)
     {
@@ -94,5 +94,45 @@ public class ListRecord {
         hashedID *= c + 123;
       }
       return Long.toUnsignedString(hashedID);
+    }
+    public String getDueDate()
+    {
+        return due_date;
+    }
+    public String getDepenency()
+    {
+        return dependency;
+    }
+    public String getId()
+    {
+        return id;
+    }
+    public String getUserId()
+    {
+        return userId;
+    }
+    public double getEstTime()
+    {
+        return est_time;
+    }
+    public long getTimeStamp()
+    {
+        return timeStamp;
+    }
+    public String getMessage()
+    {
+        return message;
+    }
+    public String getCompletionDate()
+    {
+        return completion_date;
+    }
+    public long getScheduledTime()
+    {
+        return scheduled_date;
+    }
+    public void setScheduledTime(long time)
+    {
+        scheduled_date = time;
     }
 }

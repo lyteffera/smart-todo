@@ -22,38 +22,22 @@ import java.time.format.DateTimeFormatter;
 
 import com.andrewrs.sps.data.ListRecord;
 import com.andrewrs.sps.utils.StringUtil;
+import com.andrewrs.sps.scheduling.Schedule;
+import com.andrewrs.sps.utils.DataServiceInterface;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  private DatastoreService datastore;
   private Gson gson;
   public void init()
   {
-    datastore = DatastoreServiceFactory.getDatastoreService();
     gson = new Gson();
   }
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
   {
-    ArrayList<ListRecord> records = new ArrayList<ListRecord>();
-    ArrayList<ListRecord> closedRecords = new ArrayList<ListRecord>();
     response.setContentType("text/json;");
-    Query query = new Query("message_log").addSort("timeStamp", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
-    for (Entity entity : results.asIterable())
-    {
-      ListRecord temp = entityToLR(entity);
-      if (temp.getStatus().equals("closed")) 
-        closedRecords.add(temp);
-      else 
-        records.add(temp);
-    }
-    for(ListRecord record:closedRecords)
-    {
-        records.add(record);
-    }
-    response.getWriter().println(gson.toJson(records));
+    response.getWriter().println(gson.toJson(DataServiceInterface.getAll()));
   }
     @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
@@ -76,9 +60,12 @@ public class DataServlet extends HttpServlet {
       entity.setProperty("dependency", StringUtil.escapeQuotesInParameter(dependency));
       entity.setProperty("status", status);
       entity.setProperty("scheduled_date", -1);
-      datastore.put(entity);
-      ListRecord newEntity = entityToLR(entity);
-      newEntity.createCalendarEvent();
+      DataServiceInterface.put(entity);
+      ListRecord newEntity = DataServiceInterface.entityToLR(entity);
+      ListRecord[] entities = new ListRecord[1];
+      entities[0] = newEntity;
+      Schedule scheduler = new Schedule(entities);
+      DataServiceInterface.put(entity);
     response.sendRedirect("/index.html");
   }
 
@@ -91,65 +78,5 @@ public class DataServlet extends HttpServlet {
     return value;
   }
 
-  private ListRecord entityToLR(Entity entity) {
-    long time = -1, scheduled_date = -1;
-    double est_time = -1;
-    String user_id = "", message = "", due_date = "", completion_date = "", status = "invalid", dependency = "";
-    String id = "";
-    try{
-        id = KeyFactory.keyToString(entity.getKey());
-    }catch(Exception e)
-    {
-      System.out.print("Could not find id, ");
-    }
-    try{
-        time = Long.parseLong((String)entity.getProperty("timeStamp"));
-    }catch(Exception e)
-    {
-      System.out.print("time, ");
-    }
-    try{
-      scheduled_date = Long.parseLong((String)entity.getProperty("scheduled_date"));
-    }catch(Exception e)
-    {
-      System.out.print("scheduled_date, ");
-    }
-    try{
-        est_time = Double.parseDouble((String)entity.getProperty("est_time"));
-    }catch(Exception e)
-    {
-      System.out.print("est_time, ");
-    }
-    try{
-        message = (String)entity.getProperty("message");
-    }catch(Exception e){
-      System.out.print("message, ");
-    }
-    try{
-      dependency = (String)entity.getProperty("dependency");
-    }catch(Exception e){
-    System.out.print("dependency, ");
-  }
-    try{
-        user_id = (String)entity.getProperty("user_id");
-    }catch(Exception e){
-      System.out.print("user_id, ");
-    }
-    try{
-        due_date = (String)entity.getProperty("due_date");
-    }catch(Exception e){
-      System.out.print("due_date, ");
-    }
-    try{
-        completion_date = (String)entity.getProperty("completion_date");
-    }catch(Exception e){
-      System.out.print("completion_date, ");
-    }
-    try{
-        status = (String)entity.getProperty("status");
-    }catch(Exception e){
-      System.out.print("status");
-    }
-    return new ListRecord(id, dependency, time, user_id, message, est_time, due_date, completion_date, status, scheduled_date);
-  }
+
 }

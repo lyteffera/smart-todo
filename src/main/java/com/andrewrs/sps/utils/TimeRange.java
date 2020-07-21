@@ -21,6 +21,15 @@ import java.util.Comparator;
  * providing methods to make ranges easier to work with (e.g. {@code overlaps}).
  */
 public final class TimeRange {
+  private long day = -1;
+  public void setDay(int day)
+  {
+      this.day = day;
+  }
+  public long getDay()
+  {
+      return day;
+  }
   public static final int START_OF_DAY = getTimeInMinutes(0, 0);
   public static final int END_OF_DAY = getTimeInMinutes(23, 59);
 

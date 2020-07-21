@@ -1,4 +1,5 @@
-package com.andrewrs.sps.util;
+
+package com.andrewrs.sps.utils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +18,7 @@ public class Day {
     
     public Day()
     {
-        resize(15);
+        resize(30);
         only9to5();
     }
     //this constructor takes the size of the smallest block of time allocatable in minutes, so if you
