@@ -59,12 +59,13 @@ public class ListRecord {
         event.setStart(start);
 
         // event end time will be determined by scheduling software
-        DateTime endDateTime = new DateTime((long)(1595289600L+ this.scheduled_date + (this.est_time * 3600 * 1000)));
+        DateTime endDateTime = new DateTime((long)(this.scheduled_date + (this.est_time * 3600 * 1000)));
         EventDateTime end = new EventDateTime()
             .setDateTime(endDateTime)
             .setTimeZone("America/Los_Angeles");
         event.setEnd(end);
 
+        System.out.println("startDate: " + startDateTime.getValue() + " endDate: " + endDateTime.getValue());
         EventReminder[] reminderOverrides = new EventReminder[] {
             new EventReminder().setMethod("email").setMinutes(24 * 60),
             new EventReminder().setMethod("popup").setMinutes(10),
@@ -88,7 +89,7 @@ public class ListRecord {
       return this.status;
     }
 
-    private String hashID() {
+    public String hashID() {
       long hashedID = 1;
       for (char c : this.id.toCharArray()) {
         hashedID *= c + 123;

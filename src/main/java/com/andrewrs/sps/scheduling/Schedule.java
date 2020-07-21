@@ -58,12 +58,12 @@ public class Schedule {
                             new DateTime(current.getStart()),new DateTime(current.getEnd())
                             ));
                 JsonObject busy = freeBusy.getChild("calendars.primary.busy");
-                if(busy.getChildren().size() == 0)
-                {
-                    current.setScheduledDate(current.getStart() - (current.getStart()%360000*24) + 360000*9);
-                    current.save();
-                    continue;
-                }
+                // if(busy.getChildren().size() == 0)
+                // {
+                //     current.setScheduledDate(current.getStart() - (current.getStart()%360000*24) + 360000*9);
+                //     current.save();
+                //     continue;
+                // }
                 int checkedDays = 0;
                 while(current.getScheduledDate() <= 0 && checkedDays*360000*24 < (current.getEnd()-current.getStart()))
                 {
@@ -74,7 +74,7 @@ public class Schedule {
                         String endString = busyTime.getChild("end").getData();
                         long start = parseTime(startString);
                         long end = parseTime(endString);
-                        if(timesInDay.size() == 0 || timesInDay.get(timesInDay.size()-1).getDay() == start/(360000*24) && 
+                        if(timesInDay.size() == 0 || timesInDay.get(timesInDay.size()-1).getDay() == start/(360000*24) &&
                         timesInDay.get(timesInDay.size()-1).getDay() > start/(360000*24) + checkedDays)
                         {
                             TimeRange range = TimeRange.fromStartDuration((int)start%(360000*24),(int)end%(360000*24));
@@ -93,7 +93,9 @@ public class Schedule {
                     }
                     checkedDays++;
 
-                    current.save();
+                    if(current.getScheduledDate() > 0) current.save();
+                    else System.out.println("NOT SAVING: " + current.getPrimary().getMessage() + " "+ current.getPrimary().hashID() + " date: " + current.getScheduledDate());
+
                     Entity entity = DataServiceInterface.get(KeyFactory.stringToKey(current.getPrimary().getId()));
                     if(entity != null)
                     {
@@ -101,15 +103,13 @@ public class Schedule {
                         DataServiceInterface.put(entity);
                     }
                 }
-                
+
             }
             else
             {
                 current.setScheduledDate(current.getScheduledDate());
             }
         }
-        
-        JsonObject parsedBusy = JsonObjectification.objectify(json);
     }
     private long parseTime(String s)
     {

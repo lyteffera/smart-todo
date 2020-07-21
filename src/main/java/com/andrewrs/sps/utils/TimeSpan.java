@@ -11,9 +11,9 @@ import java.text.ParseException;
 
 public final class TimeSpan {
 
-  long start = 0,end = 0;
-  ListRecord primary;
-  TimeSpan dependency,parent;
+  private long start = 0,end = 0;
+  private ListRecord primary;
+  private TimeSpan dependency,parent;
 public TimeSpan(){}
   //assign dep/ parents.
   //iterate through list of time spans from most
@@ -21,6 +21,7 @@ public TimeSpan(){}
   {
       start = System.currentTimeMillis();
       SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+      this.primary = primary;
       try {
             Date d = f.parse(primary.getDueDate());
             end = d.getTime();
@@ -31,14 +32,15 @@ public TimeSpan(){}
   public void setScheduledDate(long time)
   {
       primary.setScheduledTime(time);
-      parent.setStart(time);
+      if(parent != null)
+        parent.setStart(time);
   }
   public void assignDependency(HashMap<String,TimeSpan> lookup)
   {
-      dependency = lookup.get(primary.getDepenency());
+    dependency = lookup.get(primary.getDepenency());
       if(dependency == null)
             dependency = new TimeSpan();
-      else 
+      else
       {
           dependency.setParent(this);
           dependency.setEnd(this.end-(long)(primary.getEstTime()*3600*1000));
@@ -47,7 +49,8 @@ public TimeSpan(){}
   }
   private void setParent(TimeSpan parent)
   {
-      this.parent = parent;
+    this.parent = parent;
+    if(primary.getScheduledTime() > this.parent.getStart())
       this.parent.setStart(primary.getScheduledTime());
   }
   public void setStart(long start)
@@ -63,11 +66,11 @@ public TimeSpan(){}
   }
   public void setEnd(long end)
   {
-      if(end < this.end) 
+      if(end < this.end)
         this.end = end;
   }
   @Override
-  public int hashCode() 
+  public int hashCode()
   {
     return Long.hashCode(start) + dependency.hashCode();
   }
