@@ -1,51 +1,35 @@
 <html>
   <head>
-    <meta charset="UTF-8" name="viewport" content="width=device-width", initial-scale="1">
-    <title>Smart To-Do</title>
+    <meta charset="UTF-8">
+    <title>Andrew Rubinstein</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="script.js"></script>
   </head>
-  <body id="content" onload="includeDynamicHTML('image_handler'); addItemsToDropDown('dependency_drop_down');">
+  <body id="body" onload="includeDynamicHTML('image_handler')">
+    <div id="content" class="skyline-backdrop">
+    <br><br>
     
-        <div style="text-align:left">
-        <div id="google_translate_element"></div>
-        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-        </div>
-    <img src="images/smart.png" width="15%"/> 
-    </br>  
-    <div style="text-align:center">
-    <h1>Smart To-Do</h1>
-    </div>
-        <div id="include-partials/navigation"></div>
     <div class="text-container">
-
         <div class="text">
-       
-        <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FNew_York&amp;src=YXJ1Ymluc3RlaW5Ac3BzLXByb2dyYW0uY29t&amp;src=YWRkcmVzc2Jvb2sjY29udGFjdHNAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23039BE5&amp;color=%2333B679&amp;color=%230B8043" 
-        style="padding: 5% 5%;border-radius:10px;" width="97%" height="600px" frameborder="0" scrolling="no"></iframe>
-    
- 
+                <div id="include-data"></div>
+
     <div class="text-container">
         <form action="data" method="POST">
             <div class="text">
-                Task:<br> <textarea name="message" required=true></textarea><br>
-                Estimated Time To Complete Task(hrs):<br> <input type="text" name="est_time" maxlength="5" required=true><br>
-                Due Date:<br> <input type="date" id="due_date" name="due_date"  required=true><br>
-                Dependency:<br>
-                <select id="dependency_drop_down" name="dependency">
-                </select>
-                <input type="submit" class="button"/>
+                Your Submission:<br> <textarea name="message" required=true></textarea><br>
+                Estimated Time To Complete:<br> <input type="text" name="est_time" maxlength="80" required=true><br>
+                Due Date:<br> <input type="date" id="due_date" name="due_date"  required=true>
+                <input type="submit">
             </div>
         </form>
-        <input type="submit" class="button" onclick="deleteCompleted()" value="Delete Completed Tasks"/>
+        <input type="submit" onclick="deleteCompleted()" value="Delete Completed Tasks">
     </div>
-                <div id="include-data"></div>
-                <div id="include-partials/contact"></div>
 </div>
- </div>
+        
+    </div>
     </div>
     </div>
     </body>
     </html>
     <script>updateDataInclude();</script>
+    

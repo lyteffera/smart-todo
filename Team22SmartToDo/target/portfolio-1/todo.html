@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Andrew Rubinstein</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+  </head>
+  <body id="body" onload="includeDynamicHTML('image_handler')">
+    <div id="content" class="skyline-backdrop">
+    <br><br>
+    
+    <div class="text-container">
+      <div class="center">
+        <div class="text">
+            <div class="list_container">
+                <div id="include-data"></div>
+            </div>
+        <h1 style="font-size:100%;"> CSV Input </h1>
+
+    <div class="text-container">
+        <form action="data" method="POST">
+            <div class="text">
+                Your Submission: <input type="text" name="message" maxlength="250" size="52" required=true><br>
+                Estimated Time To Complete: <input type="text" name="est_time" maxlength="80" required=true>
+                Due Date: <input type="date" id="due_date" name="due_date"  required=true>
+                <input type="submit">
+            </div>
+        </form>
+    </div>
+</div>
+        
+    </div>
+    </div>
+    </div>
+    </body>
+    </html>
+    <script>updateDataInclude();</script>
+    
