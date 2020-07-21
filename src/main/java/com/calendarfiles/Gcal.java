@@ -26,9 +26,9 @@ import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList; 
+import java.util.ArrayList;
 
-public class CalendarQuickstart {
+public class Gcal {
     private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
@@ -48,23 +48,28 @@ public class CalendarQuickstart {
      */
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-        if (in == null) {
-            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
-        }
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+        try {
+            InputStream in = Gcal.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+            if (in == null) {
+                throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
+            }
+            GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
-        // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-                .setAccessType("offline")
-                .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+            // Build flow and trigger user authorization request.
+            GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                    HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+                    .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                    .setAccessType("offline")
+                    .build();
+            LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+            return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public static Calendar getCalendarService(){
+    public static Calendar getCalendarService() {
         // Build a new authorized API client service.
         Calendar service = null;
         try{
@@ -74,13 +79,15 @@ public class CalendarQuickstart {
                 .build();
         }catch(Exception e)
         {
+
+            System.out.println("ERROR GETTING CAL SERVICE");
             e.printStackTrace();
         }
-        
+
         return service;
     }
 
-    private static void printUpcomingEvents(Calendar cal, DateTime now) throws IOException, GeneralSecurityException {
+    public static void printUpcomingEvents(Calendar cal, DateTime now) throws IOException, GeneralSecurityException {
         // List the next 10 events from the primary calendar.
         Events events = cal.events().list("primary")
                 .setMaxResults(10)
@@ -98,12 +105,12 @@ public class CalendarQuickstart {
                 if (start == null) {
                     start = event.getStart().getDate();
                 }
-                System.out.printf("%s (%s)\n", event.getSummary(), start);
+                System.out.printf("%s: %s (%s)\n", event.getId(), event.getSummary(), start);
             }
         }
     }
 
-    private static void getFreeBusy(Calendar cal, DateTime startTime, DateTime endTime) throws IOException, GeneralSecurityException {
+    public static String getFreeBusy(Calendar cal, DateTime startTime, DateTime endTime) {
       FreeBusyRequest req = new FreeBusyRequest();
       FreeBusyRequestItem item = new FreeBusyRequestItem();
       item.setId("primary");
@@ -111,8 +118,14 @@ public class CalendarQuickstart {
       req.setTimeMin(startTime);
       req.setTimeMax(endTime);
       req.setItems(items);
-      Calendar.Freebusy.Query fbq = cal.freebusy().query(req);
-      FreeBusyResponse fbresponse = fbq.execute();
-      System.out.println("***********free busy:************ \n" + fbresponse.toPrettyString());
+      try {
+        Calendar.Freebusy.Query fbq = cal.freebusy().query(req);
+        FreeBusyResponse fbresponse = fbq.execute();
+        System.out.println("***********free busy:************ \n" + fbresponse.toPrettyString());
+        return fbresponse.toString();
+      } catch(Exception e) {
+          e.printStackTrace();
+          return null;
+      }
     }
 }
